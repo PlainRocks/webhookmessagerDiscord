@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Discord Webhook Notification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            height: 100vh;
+            flex-direction: column;
+        }
+
+        .topbar {
+            width: 100%;
+            background-color: #333;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 10px 20px;
+            box-sizing: border-box;
+        }
+
+        .topbar img {
+            height: 40px;
+            margin-right: 20px;
+        }
+
+        .topbar h1 {
+            flex-grow: 1;
+            text-align: center;
+            margin: 0;
+        }
+
+        .container {
+            display: flex;
+            flex: 1;
+        }
+
+        .sidebar {
+            width: 200px;
+            background-color: #333;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+
+        .sidebar button {
+            background-color: #444;
+            color: gray;
+            border: none;
+            padding: 10px;
+            margin: 5px 0;
+            cursor: not-allowed;
+        }
+
+        .sidebar button.active, .sidebar button.home {
+            background-color: #1e90ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        .content {
+            flex-grow: 1;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+
+        .description, #messageContainer, #frame, #webhookContainer {
+            display: none;
+            margin-top: 20px;
+            width: 100%;
+            max-width: 600px;
+            text-align: center;
+        }
+
+        input[type="text"] {
+            padding: 10px;
+            width: 300px;
+            margin-right: 10px;
+        }
+
+        #messageInput {
+            margin-top: 10px; /* Adjusted margin */
+        }
+
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            background-color: #1e90ff;
+            color: white;
+            cursor: pointer;
+        }
+
+        button:disabled {
+            background-color: #444;
+            color: gray;
+            cursor: not-allowed;
+        }
+
+        #frame {
+            border: 1px solid #ddd;
+            padding: 20px;
+            background-color: #f9f9f9;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="topbar">
+        <img src="your-logo-url.png" alt="Logo">
+        <h1>System Controller</h1>
+        <div style="width: 60px;"></div>
+    </div>
+    <div class="container">
+        <div class="sidebar">
+            <button id="homeButton" class="home">Home</button>
+            <button disabled>Disabled</button>
+            <button disabled>Disabled</button>
+            <button id="webhookController" class="active">WebHookController</button>
+        </div>
+        <div class="content">
+            <div class="description">
+                <h2>Welcome to the System Controller</h2>
+                <p>This website allows you to send notifications to a Discord server using webhooks.</p>
+                <p>Use the WebHookController button to send custom messages to your Discord channel.</p>
+                <p>More features will be added soon.</p>
+            </div>
+            <div id="messageContainer">
+                <input type="text" id="messageInput" placeholder="Enter your message">
+                <input type="text" id="webhookInput" placeholder="Discord Webhook URL">
+                <button id="confirmButton">Confirm Message</button>
+            </div>
+            <div id="frame">
+                
+            </div>
+        </div>
+    </div>
+
+    <script>
+        document.getElementById('homeButton').addEventListener('click', function() {
+            document.querySelector('.description').style.display = 'block';
+            document.getElementById('messageContainer').style.display = 'none';
+            document.getElementById('frame').style.display = 'none';
+        });
+
+        document.getElementById('webhookController').addEventListener('click', function() {
+            document.querySelector('.description').style.display = 'none';
+            document.getElementById('messageContainer').style.display = 'block';
+            document.getElementById('frame').style.display = 'block';
+        });
+
+        document.getElementById('confirmButton').addEventListener('click', function() {
+            const message = document.getElementById('messageInput').value;
+            const webhookUrl = document.getElementById('webhookInput').value;
+            if (!webhookUrl) {
+                alert('Please enter a webhook URL');
+                return;
+            }
+            if (message) {
+                sendNotification(webhookUrl, message);
+            } else {
+                alert('Please enter a message');
+            }
+        });
+
+        function sendNotification(webhookUrl, message) {
+            const payload = {
+                content: message
+            };
+
+            fetch(webhookUrl, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify(payload)
+            })
+            .then(response => {
+                if (response.ok) {
+                    console.log('Notification sent successfully');
+                    alert('Notification sent successfully');
+                } else {
+                    console.error('Error sending notification');
+                    alert('Error sending notification');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Error:', error);
+            });
+        }
+    </script>
+</body>
+</html>
